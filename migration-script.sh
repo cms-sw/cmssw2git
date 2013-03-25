@@ -3,7 +3,7 @@ export PYTHONPATH=/build/ge/test-git/sw/usr/lib/python2.4/site-packages
 export PATH=/build/ge/test-git/sw/bin:$PATH
 # Take care of CMSSW.
 time rsync -av --delete --delete-excluded \
-                        --exclude "**/Vis*" --exclude "**/Ig*" --exclude "**/data/*.out,v" \
+                        --exclude "**/Vis*/" --exclude "**/Ig*" --exclude "**/data/*.out,v" \
                         --exclude "**/data/*.txt,v" --exclude "**/Attic" \
                         --exclude "*.dat,v" --exclude "**/*.root,v" --exclude "**/.admin" \
                         --exclude "**/*.gz" --exclude "**/*.tgz,v" --exclude "**/doc" \

@@ -4,7 +4,7 @@ export PATH=/build/ge/test-git/sw/bin:$PATH
 # Take care of CMSSW.
 time rsync -av --delete --delete-excluded \
                         --exclude "**/Vis*" --exclude "**/Ig*" --exclude "**/data/*.out,v" \
-                        --exclude "**/data/*.txt,v" --exclude "**/Attic" --exclude "**/data/*.xml,v" \
+                        --exclude "**/data/*.txt,v" --exclude "**/Attic" \
                         --exclude "*.dat,v" --exclude "**/*.root,v" --exclude "**/.admin" \
                         --exclude "**/*.gz" --exclude "**/*.tgz,v" --exclude "**/doc" \
                         --exclude "Release.conf" \

@@ -2,34 +2,36 @@
 export PYTHONPATH=/build/ge/test-git/sw/usr/lib/python2.4/site-packages
 export PATH=/build/ge/test-git/sw/bin:$PATH
 # Take care of CMSSW.
-time rsync -av --delete --delete-excluded \
-                        --exclude "**/Vis*/" --exclude "**/Ig*" --exclude "**/data/*.out,v" \
-                        --exclude "**/data/*.txt,v" --exclude "**/Attic" \
-                        --exclude "*.dat,v" --exclude "**/*.root,v" --exclude "**/.admin" \
-                        --exclude "**/*.gz" --exclude "**/*.tgz,v" --exclude "**/doc" \
-                        --exclude "Release.conf" \
-                        --exclude "*.db,v" \
-                        --exclude "*.slha,v" \
-                        --exclude "*.jar,v" \
-                        --exclude "*.pev,v" \
-                        --exclude "**/data" \
-                        --exclude "**/ISpy" \
-                        --exclude "**/SimG4Validation" \
-                        --exclude "*.so,v" \
-                        --exclude "**/UserCode" \
-                        --exclude "**/OpticalAlignment" \
-                        --exclude "**/Utilities/Threads" \
-                        --exclude "**/SWDevTools" \
-                        --exclude "**/UserCode" \
-                        --exclude "Utilities/BuildScripts" \
-                        --exclude "HiggsAnalysis/HiggsToZZ4Leptons" \
-                        --exclude "ElectroWeakAnalysis/VPlusJets" \
-                        --exclude "HeavyFlavorAnalysis/Bs2MuMu" \
-                        --exclude "HiggsAnalysis/HiggsToWW2Leptons" \
-                        --exclude "TauAnalysis/TauIdEfficiency" \
-                        --exclude "DQM/Integration" \
-                        --exclude "Configuration/GenProduction" \
-                        --exclude "#*" \
+time rsync -a --delete --delete-excluded \
+                       --exclude "**/Vis*/" --exclude "**/Ig*" --exclude "**/data/*.out,v" \
+                       --exclude "**/data/*.txt,v" --exclude "**/Attic" \
+                       --exclude "*.dat,v" --exclude "**/*.root,v" --exclude "**/.admin" \
+                       --exclude "**/*.gz,v" --exclude "**/*.tgz,v" --exclude "**/doc/" \
+                       --exclude "Release.conf" \
+                       --exclude "*.db,v" \
+                       --exclude "*.slha,v" \
+                       --exclude "*.jar,v" \
+                       --exclude "*.pev,v" \
+                       --exclude "**/ISpy" \
+                       --exclude "**/SimG4Validation" \
+                       --exclude "*.so,v" \
+                       --exclude "**/UserCode" \
+                       --exclude "**/OpticalAlignment" \
+                       --exclude "**/Utilities/Threads" \
+                       --exclude "**/SWDevTools" \
+                       --exclude "**/UserCode" \
+                       --exclude "Utilities/BuildScripts" \
+                       --exclude "HiggsAnalysis/HiggsToZZ4Leptons" \
+                       --exclude "ElectroWeakAnalysis/VPlusJets" \
+                       --exclude "HeavyFlavorAnalysis/Bs2MuMu" \
+                       --exclude "HiggsAnalysis/HiggsToWW2Leptons" \
+                       --exclude "TauAnalysis/TauIdEfficiency" \
+                       --exclude "DQM/Integration" \
+                       --exclude "Configuration/GenProduction" \
+                       --exclude "Validation/VstQuaero" \
+                       --exclude "TESTSubSystem" \
+                       --exclude "OnlineDB/ESCondDB/sql/create_ES_fe_daq_config.sql" \
+                       --exclude "#*" \
       /afs/cern.ch/project/cvs/reps/CMSSW/CMSSW/ /build/ge/test-git/cvs/CMSSW/CMSSW/
 mkdir -p cvs2git-tmp/
 cp -f hints.txt hints-final.txt

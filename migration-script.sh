@@ -131,35 +131,6 @@ pushd config.git
   git push cern -f master --tags
 popd
 
-# Take care of PKGTOOLS
-time rsync -av --delete --delete-excluded \
-                        --exclude "#*" \
-      /afs/cern.ch/project/cvs/reps/CMSSW/COMP/PKGTOOLS/ /build/ge/test-git/cvs/CMSSW/PKGTOOLS/
-mkdir -p cvs2git-pkgtools-tmp/
-time /build/ge/test-git/sw/usr/bin/cvs2git --blobfile=cvs2git-pkgtools-tmp/git-blob.dat \
-                                        --dumpfile=cvs2git-pkgtools-tmp/git-dump.dat \
-                                        /build/ge/test-git/cvs/CMSSW/PKGTOOLS \
-                                        --use-external-blob-generator \
-                                        --symbol-transform="(.*)/:\1-" \
-                                        --username cmsbuild \
-                                        --exclude "[^V].*" \
-                                        --exclude "V00-08-.*" \
-                                        --exclude "V00-16-09-0.*" \
-                                        --fallback-encoding "UTF8" \
-                                        --tmpdir=foo1 \
-                                        --pass 1:16
-rm -rf PKGTOOLS.git
-mkdir -p PKGTOOLS.git
-pushd PKGTOOLS.git
-  git init --bare
-  cat ../cvs2git-pkgtools-tmp/git-blob.dat ../cvs2git-pkgtools-tmp/git-dump.dat | git fast-import
-  #git repack -a -d -f --depth=125000 --window=1250
-  git gc --prune=now --aggressive
-  git remote add origin git@github.com:cms-sw/pkgtools.git
-  git remote add cern https://:@git.cern.ch/kerberos/PKGTOOLS.git
-  git push origin -f master --tags
-  git push cern -f master --tags
-popd
 # Take care of CMSDIST 
 time rsync -av --delete --delete-excluded \
                         --exclude "#*" \

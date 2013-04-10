@@ -61,43 +61,6 @@ pushd CMSSW.git
   git push cern -f master --tags
 popd
 
-# Take care of config
-cat << \EOF > config-hints.txt
-. forBinLess_SCRAM branch . .
-. forXML_SCRAM branch . .
-. SCRAM_V2_0 branch . .
-. COMMON_BUILD_CONFIG branch . .
-EOF
-time rsync -av --delete --delete-excluded \
-                        --exclude "#*" \
-      /afs/cern.ch/project/cvs/reps/CMSSW/config/ /build/ge/test-git/cvs/CMSSW/config/
-mkdir -p cvs2git-config-tmp/
-time /build/ge/test-git/sw/usr/bin/cvs2git --blobfile=cvs2git-config-tmp/git-blob.dat \
-                                        --dumpfile=cvs2git-config-tmp/git-dump.dat \
-                                        /build/ge/test-git/cvs/CMSSW/config \
-                                        --use-external-blob-generator \
-                                        --symbol-transform="(.*)/:\1-" \
-                                        --symbol-hints=config-hints.txt \
-                                        --username cmsbuild \
-                                        --exclude "[^V].*" \
-                                        --exclude "V00.*" \
-                                        --exclude "V01.*" \
-                                        --fallback-encoding "UTF8" \
-                                        --tmpdir=foo1 \
-                                        --pass 1:16
-rm -rf config.git
-mkdir -p config.git
-pushd config.git
-  git init --bare
-  cat ../cvs2git-config-tmp/git-blob.dat ../cvs2git-config-tmp/git-dump.dat | git fast-import
-  #git repack -a -d -f --depth=125000 --window=1250
-  git gc --prune=now --aggressive
-  git remote add origin git@github.com:cms-sw/cmssw-config.git
-  git remote add cern https://:@git.cern.ch/kerberos/CMSSW/config.git
-  git push origin -f master --tags
-  git push cern -f master --tags
-popd
-
 # Take care of CMSDIST 
 time rsync -av --delete --delete-excluded \
                         --exclude "#*" \

@@ -60,39 +60,6 @@ pushd CMSSW.git
   git push origin -f master --tags
   git push cern -f master --tags
 popd
-# Take care of SCRAM
-time rsync -av --delete --delete-excluded \
-                        --exclude "#*" \
-      /afs/cern.ch/project/cvs/reps/CMSSW/COMP/SCRAM/ /build/ge/test-git/cvs/CMSSW/SCRAM/
-mkdir -p cvs2git-scram-tmp/
-cat << \EOF > scram-hints.txt
-. forBinLess_SCRAM branch . .
-. SCRAM_V2_0 branch . .
-EOF
-time /build/ge/test-git/sw/usr/bin/cvs2git --blobfile=cvs2git-scram-tmp/git-blob.dat \
-                                        --dumpfile=cvs2git-scram-tmp/git-dump.dat \
-                                        /build/ge/test-git/cvs/CMSSW/SCRAM \
-                                        --use-external-blob-generator \
-                                        --symbol-transform="(.*)/:\1-" \
-                                        --symbol-hints=scram-hints.txt \
-                                        --username cmsbuild \
-                                        --exclude "[^V].*" \
-                                        --exclude "V[01].*" \
-                                        --fallback-encoding "UTF8" \
-                                        --tmpdir=foo1 \
-                                        --pass 1:16
-rm -rf SCRAM.git
-mkdir -p SCRAM.git
-pushd SCRAM.git
-  git init --bare
-  cat ../cvs2git-scram-tmp/git-blob.dat ../cvs2git-scram-tmp/git-dump.dat | git fast-import
-  #git repack -a -d -f --depth=125000 --window=1250
-  git gc --prune=now --aggressive
-  git remote add origin git@github.com:cms-sw/scram.git
-  git remote add cern https://:@git.cern.ch/kerberos/SCRAM.git
-  git push origin -f master --tags
-  git push cern -f master --tags
-popd
 
 # Take care of config
 cat << \EOF > config-hints.txt

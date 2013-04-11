@@ -19,21 +19,7 @@ time rsync -av --delete --delete-excluded \
                         --exclude "Attic/" \
       /afs/cern.ch/project/cvs/reps/CMSSW/$BASE_PROJECT/$PROJECT_NAME/ $DESTDIR
 
-time /build/ge/test-git/sw/usr/bin/cvs2git --blobfile=cvs2git-$PROJECT_NAME-tmp/git-blob.dat \
-                                        --dumpfile=cvs2git-$PROJECT_NAME-tmp/git-dump.dat \
-                                        $DESTDIR \
-                                        --use-external-blob-generator \
-                                        --symbol-transform="(.*)/:\1-" \
-                                        --username cmsbuild \
-                                        --exclude "V0.*" \
-                                        --exclude "V1.*" \
-                                        --exclude "unlabeled.*" \
-                                        --exclude "BuildSystemProto.*" \
-                                        --exclude "Play.*" \
-                                        --exclude "HPW.*" \
-                                        --fallback-encoding "UTF8" \
-                                        --tmpdir=cvs2git-$PROJECT_NAME-tmp/tmp \
-                                        --pass 1:16
+time /build/ge/test-git/sw/usr/bin/cvs2git --options cvs2git-scram.options --pass 1:16
 rm -rf $PROJECT_NAME.git
 git init --bare $PROJECT_NAME.git
 perl -p -i -e 's/^committer cmsbuild <>/committer Giulio Eulisse <sha1-a598d8593b5db48d5829590a227bbe04f25460b4\@cern.ch>/; \

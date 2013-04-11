@@ -15,7 +15,10 @@ grep -r author $CVS_ROOT_DIR/$CVS_PROJECT | grep :date | cut -f 3 | sed -e 's/au
 echo "${PROJECT}_USERS = {"
 for x in `cat $WORKDIR/users.txt`; do 
   REAL_NAME="`phonebook --login $x -t firstname -t surname | tr ';' ' '`"
+  if [ "X$REAL_NAME" = X ]; then
+    REAL_NAME=$x
+  fi
   FAKE_EMAIL=`echo $x | sha1sum | cut -d\  -f1`
-  echo \"$x\": \"$REAL_NAME \<sha1-$FAKE_EMAIL\@cern.ch\>\", | grep -v -e '[:][ ]["][ ][<]' || true
+  echo \"$x\": \"$REAL_NAME \<sha1-$FAKE_EMAIL\@cern.ch\>\",
 done
 echo "}"

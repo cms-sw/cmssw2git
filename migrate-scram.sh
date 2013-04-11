@@ -1,22 +1,50 @@
 #!/bin/sh -ex
-rm -rf tmp
-mkdir tmp
-cd tmp
+export PYTHONPATH=/build/ge/test-git/sw/usr/lib/python2.4/site-packages
+export PATH=/build/ge/test-git/sw/bin:$PATH
+BASE_PROJECT=COMP
+PROJECT_NAME=SCRAM
+DESTDIR=/build/ge/test-git/cvs/CMSSW/$BASE_PROJECT/$PROJECT_NAME/
+mkdir -p $DESTDIR
+# Take care of $PROJECT_NAME
+rm -rf cvs2git-$PROJECT_NAME-tmp/
+mkdir -p cvs2git-$PROJECT_NAME-tmp/tmp
+time rsync -av --delete --delete-excluded \
+                        --exclude "Installation/" \
+                        --exclude "Testing/" \
+                        --exclude "cgi/" \
+                        --exclude "configuration/" \
+                        --exclude "doc/" \
+                        --exclude "scripts/" \
+                        --exclude "toolbox/" \
+                        --exclude "Attic/" \
+      /afs/cern.ch/project/cvs/reps/CMSSW/$BASE_PROJECT/$PROJECT_NAME/ $DESTDIR
 
-cvs -Q export -r V2_2_5_pre2 -d SCRAM-V2_2_5_pre2 SCRAM
-cvs -Q co -r V2_2_5_pre2 -d SCRAM-IMPORT_HEAD SCRAM
-pushd SCRAM-IMPORT_HEAD
-  cvs update -A
-  find . -name CVS -type d | xargs rm -rf
+time /build/ge/test-git/sw/usr/bin/cvs2git --blobfile=cvs2git-$PROJECT_NAME-tmp/git-blob.dat \
+                                        --dumpfile=cvs2git-$PROJECT_NAME-tmp/git-dump.dat \
+                                        $DESTDIR \
+                                        --use-external-blob-generator \
+                                        --symbol-transform="(.*)/:\1-" \
+                                        --username cmsbuild \
+                                        --exclude "V0.*" \
+                                        --exclude "V1.*" \
+                                        --exclude "unlabeled.*" \
+                                        --exclude "BuildSystemProto.*" \
+                                        --exclude "Play.*" \
+                                        --exclude "HPW.*" \
+                                        --fallback-encoding "UTF8" \
+                                        --tmpdir=cvs2git-$PROJECT_NAME-tmp/tmp \
+                                        --pass 1:16
+rm -rf $PROJECT_NAME.git
+git init --bare $PROJECT_NAME.git
+perl -p -i -e 's/^committer cmsbuild <>/committer Giulio Eulisse <sha1-a598d8593b5db48d5829590a227bbe04f25460b4\@cern.ch>/; \
+              s/^committer muzaffar <>/committer Shahzad Malik Muzaffar <sha1-dc0e3810c4d4d85d6295265f1fb210880ec3f132\@cern.ch>/; \
+              s/^committer elmer <>/committer Peter Elmer <sha1-80460c2ac58e1aa0fd289ec2aa9d168a17bd6eb2\@cern.ch>/; \
+              s/^committer sashby <>/committer Shaun Ashby <sha1-0665f252eb8e02afcb80198b20033a58c31fd1b3\@cern.ch>/; \
+              s/^committer williamc <>/committer Christopher Williams <sha1-ebcb402bd5472f352dd1d1c7a94fa0cbb49cf4a3\@cern.ch>/;' \
+              cvs2git-$PROJECT_NAME-tmp/git-dump.dat
+pushd $PROJECT_NAME.git
+  cat ../cvs2git-$PROJECT_NAME-tmp/git-blob.dat ../cvs2git-$PROJECT_NAME-tmp/git-dump.dat | git fast-import
+  git gc --prune=now --aggressive
+  git remote add origin git@github.com:cms-sw/$PROJECT_NAME.git
+  git push --mirror origin
 popd
-
-git init SCRAM
-cd SCRAM
-for x in V2_2_5_pre2 IMPORT_HEAD; do
-  rsync -av --exclude .git ../SCRAM-$x/ ./
-  git add -A .
-  git commit -m "Import $x"
-  git tag $x
-done
-git remote add github git@github.com:cms-sw/SCRAM.git
-git push --mirror github

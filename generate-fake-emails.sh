@@ -1,16 +1,15 @@
 #!/bin/sh -e
 CVS_PROJECT=$1
 if [ X$CVS_PROJECT = X ]; then
-  echo "Please specify project $CVS_PROJECT"
+  echo "Please specify a project."
   exit 1
 fi
 
 PROJECT=`basename $1`
-WORKDIR=tmp/$CVS_PROJECT
+WORKDIR=tmp/$PROJECT
 mkdir -p $WORKDIR
 
-CVS_ROOT_DIR=/afs/cern.ch/project/cvs/reps/CMSSW/
-grep -r author $CVS_ROOT_DIR/$CVS_PROJECT | grep :date | cut -f 3 | sed -e 's/author //g;s/;//' | sort -u > $WORKDIR/users.txt
+grep -r author $CVS_PROJECT | grep :date | cut -f 3 | sed -e 's/author //g;s/;//' | sort -u > $WORKDIR/users.txt
 
 echo "${PROJECT}_USERS = {"
 for x in `cat $WORKDIR/users.txt`; do 

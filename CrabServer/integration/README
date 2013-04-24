@@ -1,0 +1,16 @@
+After successful installation of Crab Server, we need to setup different crontab as user crab and root.
+
+For user Crab:
+
+	- Login to the Crab Server as user 'crab'
+	- CVS checkout the COMP/ANALYSISOPS/CrabServer/integration from the repository
+	- Move all the script files  COMP/ANALYSISOPS/CrabServer/integration to /home/crab/integration directory
+	- Move  COMP/ANALYSISOPS/CrabServer/integration/crontab.dat file to /home/crab
+	-Seup crontab by using command
+	   crontab < crontab.dat
+
+For user root:
+	- Login to the Crab Server as user 'root'
+	- Move  COMP/ANALYSISOPS/CrabServer/integration/ForRoot/crontab.dat file to /root
+	- Seup crontab by using command
+	   crontab < crontab.dat

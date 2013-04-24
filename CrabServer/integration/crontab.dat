@@ -1,0 +1,2 @@
+45 * * * * /home/crab/integration/component.sh >/dev/null 2>&1
+5 1 * * * /home/crab/integration/DBSize.sh >/dev/null 2>&1

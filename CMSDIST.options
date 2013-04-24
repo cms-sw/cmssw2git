@@ -83,7 +83,11 @@ ctx.tmpdir = r'tmp/cvs2git-%s-tmp' % project
 if not exists(ctx.tmpdir):
   os.makedirs(ctx.tmpdir)
 
-ctx.revision_collector = ExternalBlobGenerator(join(ctx.tmpdir, 'git-blob.dat'))
+ctx.revision_collector = GitRevisionCollector(
+    join(ctx.tmpdir, 'git-blob.dat'),
+    CVSRevisionReader(cvs_executable=r'cvs'),
+)
+
 ctx.revision_reader = None
 ctx.trunk_only = False
 
@@ -116,7 +120,7 @@ ctx.file_property_setters.extend([
     KeywordsPropertySetter(config.SVN_KEYWORDS_VALUE),
     ExecutablePropertySetter(),
     ConditionalPropertySetter(cvs_file_is_binary, KeywordHandlingPropertySetter('untouched')),
-    KeywordHandlingPropertySetter('collapsed'),
+    KeywordHandlingPropertySetter('expanded'),
     ])
 
 ctx.revision_property_setters.extend([

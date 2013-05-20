@@ -2,3 +2,5 @@
 *-tmp
 sw
 gitstats
+tagsets
+*.pyc

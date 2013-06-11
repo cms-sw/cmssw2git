@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+from glob import glob
+from commands import getstatusoutput
+from optparse import OptionParser
+from sys import stderr, exit
+
+# Get all the files.
+# Get all the tags for a given package.
+# Get mapping between files and tag.
+# Interpolate commits between tags.
+if __name__ == "__main__":
+  parser = OptionParser(usage="migrateTc <repository>")
+  opts, args = parser.parse_args()
+  if not len(args) == 1:
+    parser.error("Wrong number of arguments")
+  
+  path = args[0].strip("/")
+  files = glob(path + "/**/*,v")
+  for f in files:
+    error, fileInfo = getstatusoutput("rlog %s" % f)
+    if error:
+      print >> stderr, "Warning: unable to get tag information about %s" % f
+    
+    info = {
+      "filename": None,
+      "workingFile": None,
+      "head": None,
+      "access list": [],
+      "tags": [],
+      "commits": []
+    }
+    inSymbolicNames = False
+    for line in fileInfo.strip("\n").split("\n"):
+      # If we are in symbolic names, capture all the symbols
+      if line.startswith("symbolic names:"):
+        inSymbolicNames = True
+        continue
+
+      # If we are caputuring symbols, split them and strip them:
+      if inSymbolicNames:
+        if line.count(":") != 2:
+          print line
+        tag, revision = line.split(":")
+        info["tags"].append((tag.strip(), revision.strip()))
+        continue
+
+      if line.startswith("RCS file:"):
+        info["filename"] = line.replace("RCS file:","").strip(" \n")
+        inSymbolicNames = False
+      elif line.startswith("Working file:"):
+        info["workingFile"] = line.replace("Working file:", "").strip(" \n")
+        inSymbolicNames = False
+      elif line.startswith("head:"):
+        info["head"] = line.replace("head:", "").strip(" \n")
+        inSymbolicNames = False
+      elif line.startswith("access list:"):
+        inSymbolicNames = False
+      elif line.startswith("branch:"):
+        inSymbolicNames = False
+      elif line.startswith("locks:"):
+        inSymbolicNames = False
+      elif line.startswith("keywords substitution:"):
+        info["keyword"] = line.replace("keywords substitution:", "").strip(" \n")
+        inSymbolicNames = False
+      else:
+        print "Unknown entry: %s." % line
+        exit(1)

@@ -1,2 +1,0 @@
-0 0 * * * /home/crab/integration/cron.sh >/dev/null 2>&1
-5 2 * * * /opt/glite/sbin/lcg-expiregridmapdir.pl -e 2400 -v >>  /var/log/lcg-expiregridmapdir.log 2>&1

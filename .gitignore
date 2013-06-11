@@ -5,3 +5,6 @@ gitstats
 tagsets
 *.pyc
 cmssw-ib
+users.txt
+tmp
+user_map.py

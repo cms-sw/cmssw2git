@@ -5,7 +5,7 @@ rm -rf cmssw-ib
 git clone -b CMSSW_6_2_X git@github.com:cms-sw/cmssw-ib.git
 pushd cmssw-ib
   CMSSWIB=$PWD
-  for x in `find $IB_PATH -mindepth 1 -maxdepth 1 -name "CMSSW_6_2_*" -type d | sort -t / -k 10`; do
+  for x in `find $IB_PATH -mindepth 1 -maxdepth 1 -name "CMSSW_6_2_*" -type d | grep -v CLANG | sort -t / -k 10`; do
     RELEASE_NAME=`echo $x | sed -e 's|.*/||'`
     echo $RELEASE_NAME
     # If it's already there, do not import it again.
